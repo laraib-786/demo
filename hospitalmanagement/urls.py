@@ -54,9 +54,12 @@ urlpatterns = [
     path('reject-patient/<int:pk>', views.reject_patient_view,name='reject-patient'),
     path('admin-discharge-patient', views.admin_discharge_patient_view,name='admin-discharge-patient'),
     path('discharge-patient/<int:pk>', views.discharge_patient_view,name='discharge-patient'),
+    
+    # edited
+    path('patient-prescription/<int:pk>', views.prescription_patient_view,name='patient-prescription'),
+    path('download-prescription-pdf/<int:pk>', views.download_pres_pdf_view, name='download-prescription-pdf'),
+    # end edited
     path('download-pdf/<int:pk>', views.download_pdf_view,name='download-pdf'),
-
-
     path('admin-appointment', views.admin_appointment_view,name='admin-appointment'),
     path('admin-view-appointment', views.admin_view_appointment_view,name='admin-view-appointment'),
     path('admin-add-appointment', views.admin_add_appointment_view,name='admin-add-appointment'),
@@ -94,6 +97,4 @@ urlpatterns +=[
 
 ]
 
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders
+

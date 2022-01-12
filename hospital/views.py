@@ -448,6 +448,95 @@ def discharge_patient_view(request,pk):
     return render(request,'hospital/patient_generate_bill.html',context=patientDict)
 
 
+# edited one
+# @login_required(login_url='doctorlogin')
+# @user_passes_test(is_doctor)
+# def patient_info_send_view(request,id):
+    
+#     return render(request,'hospital/patient_generate_prescription.html',context=patientDict)
+
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def prescription_patient_view(request,pk):
+    patient=models.Patient.objects.get(id=pk)
+    days=(date.today()-patient.admitDate) #2 days, 0:00:00
+    assignedDoctor=models.User.objects.all().filter(id=patient.assignedDoctorId)
+    d=days.days # only how many day that is 2
+    patientDict={
+        'patientId':pk,
+        'name':patient.get_name,
+        'mobile':patient.mobile,
+        'address':patient.address,
+        'symptoms':patient.symptoms,
+        'admitDate':patient.admitDate,
+        'todayDate':date.today(),
+        'day':d,
+        'assignedDoctorName':assignedDoctor[0].first_name,
+    }
+    if request.method == 'POST':
+        feeDict ={
+            'medicineName':request.POST['medicineName'],
+            'noOfTime':request.POST['noOfTime'],
+            'noOfTablets' : request.POST['noOfTablets'],
+            'syrupsQuantity' : request.POST['syrupsQuantity'],
+            'test' : request.POST['test']
+            
+        }
+        print("request.POST")
+        patientDict.update(feeDict)
+        #for updating to database patientDischargeDetails (pDD)
+        pDD=models.PatientPrescriptionDetails()
+        pDD.patientId=pk
+        # pDD.patientName=patient.get_name
+        # pDD.assignedDoctorName=assignedDoctor[0].first_name
+        # pDD.address=patient.address
+        # pDD.mobile=patient.mobile
+        # pDD.symptoms=patient.symptoms
+        # pDD.admitDate=patient.admitDate
+        # pDD.releaseDate=date.today()
+        # pDD.daySpent=int(d)
+        pDD.medicineName=request.POST['medicineName']
+        pDD.noOfTime=int(request.POST['noOfTime'])
+        pDD.noOfTablets=int(request.POST['noOfTablets'])
+        pDD.syrupsQuantity=int(request.POST['syrupsQuantity'])
+        pDD.test=request.POST['test']
+        
+        pDD.save()
+        return render(request,'hospital/patient_final_prescription.html',context=patientDict)
+    return render(request,'hospital/patient_generate_prescription.html',context=patientDict)
+
+
+
+
+
+def download_pres_pdf_view(request,pk):
+    dischargeDetails=models.PatientDischargeDetails.objects.all().filter(patientId=pk).order_by('-id')[:1]
+    prescriptionDetails=models.PatientPrescriptionDetails.objects.all().filter(patientId=pk).order_by('-id')[:1]
+    dict={
+        'patientName':dischargeDetails[0].patientName,
+        'assignedDoctorName':dischargeDetails[0].assignedDoctorName,
+        'address':dischargeDetails[0].address,
+        'mobile':dischargeDetails[0].mobile,
+        'symptoms':dischargeDetails[0].symptoms,
+        'admitDate':dischargeDetails[0].admitDate,
+        # 'releaseDate':dischargeDetails[0].releaseDate,
+        # 'daySpent':dischargeDetails[0].daySpent,
+        # 'medicineCost':dischargeDetails[0].medicineCost,
+        # 'roomCharge':dischargeDetails[0].roomCharge,
+        # 'doctorFee':dischargeDetails[0].doctorFee,
+        # 'OtherCharge':dischargeDetails[0].OtherCharge,
+        # 'total':dischargeDetails[0].total,
+        'medicineName':prescriptionDetails[0].medicineName,
+        'noOfTime':prescriptionDetails[0].noOfTime,
+        'noOfTablets':prescriptionDetails[0].noOfTablets,
+        'syrupsQuantity':prescriptionDetails[0].syrupsQuantity,
+        'test':prescriptionDetails[0].test
+
+    }
+    return render_to_pdf('hospital/download_prescription.html',dict)
+
 
 #--------------for discharge patient bill (pdf) download and printing
 import io
@@ -867,6 +956,4 @@ def contactus_view(request):
 
 
 
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders
+

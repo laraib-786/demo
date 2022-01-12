@@ -77,7 +77,30 @@ class PatientDischargeDetails(models.Model):
     OtherCharge=models.PositiveIntegerField(null=False)
     total=models.PositiveIntegerField(null=False)
 
+class PatientPrescriptionDetails(models.Model):
+    patientId=models.PositiveIntegerField(null=True)
+    medicineName=models.CharField(max_length=100)
+    noOfTime=models.PositiveIntegerField(null=False)
+    noOfTablets=models.PositiveIntegerField(null=False)
+    syrupsQuantity=models.PositiveIntegerField(null=False)
+    test=models.CharField(max_length=100)
 
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders
+    @property
+    def get_id(self):
+        return self.user.id
+
+# class PatientPrescriptionDetails(models.Model):
+#     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+
+#     medicineName=models.CharField(max_length=100)
+#     times=models.PositiveIntegerField(null=False)
+#     tablets=models.PositiveIntegerField(null=False)
+#     liquid=models.PositiveIntegerField(null=False)
+#     test=models.CharField(max_length=100)
+    
+
+
+
+
+
+

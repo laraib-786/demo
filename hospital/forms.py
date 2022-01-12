@@ -70,7 +70,9 @@ class ContactusForm(forms.Form):
     Message = forms.CharField(max_length=500,widget=forms.Textarea(attrs={'rows': 3, 'cols': 30}))
 
 
-
-#Developed By : sumit kumar
-#facebook : fb.com/sumit.luv
-#Youtube :youtube.com/lazycoders
+# class PrescriptionForm(forms.Form):
+#      medicineName=forms.CharField(max_length=100)
+#      times=forms.PositiveIntegerField(null=False)
+#      tablets=forms.PositiveIntegerField(null=False)
+#      liquid=forms.PositiveIntegerField(null=False)
+#      test=forms.CharField(max_length=100)
